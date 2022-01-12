@@ -14,7 +14,6 @@ const Wrapper = styled(motion.svg)`
   bottom: 15px;
   left: 15px;
   width: 250px;
-  transform-origin: center;
 `;
 
 const Spinner: FC = () => {
