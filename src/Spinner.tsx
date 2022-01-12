@@ -1,5 +1,5 @@
-import type { FC, MouseEvent } from "react";
-import { useCallback, useEffect, useRef, useMemo } from "react";
+import type { FC } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import styled from "@emotion/styled";
 import {
   motion,
@@ -29,8 +29,8 @@ const Spinner: FC = () => {
   const cursorY = useMotionValue(0);
   const irisRotationX = useTransform(cursorX, [-10, 168.9], [-40, 40]);
   const irisRotationY = useTransform(cursorY, [0, 110.08], [-15, 15]);
-  const pupilRotationX = useTransform(cursorX, [0, 160], [-10, 10]);
-  const pupilRotationY = useTransform(cursorY, [-50, 200], [-10, 10]);
+  const pupilRotationX = useTransform(cursorX, [0, 160], [-6, 6]);
+  const pupilRotationY = useTransform(cursorY, [-50, 200], [-6, 6]);
 
   const mouseMoveHandler = useCallback(
     (event: MouseEvent) => {
