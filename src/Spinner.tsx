@@ -1,10 +1,12 @@
 import type { FC } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import styled from "@emotion/styled";
 import {
   motion,
   useViewportScroll,
   useSpring,
   useTransform,
+  useMotionValue
 } from "framer-motion";
 
 const Wrapper = styled(motion.svg)`
@@ -16,9 +18,33 @@ const Wrapper = styled(motion.svg)`
 
 const Spinner: FC = () => {
   const { scrollYProgress } = useViewportScroll();
+  const eyeRef = useRef<SVGPathElement>(null);
 
   const rotation = useTransform(scrollYProgress, (val) => val * 360);
   const smoothRotation = useSpring(rotation, { stiffness: 400, damping: 90 });
+
+  const cursorX = useMotionValue(0);
+  const cursorY = useMotionValue(0);
+  const irisRotationX = useTransform(cursorX, [-10, 168.9], [-40, 40]);
+  const irisRotationY = useTransform(cursorY, [0, 110.08], [-15, 15]);
+  const pupilRotationX = useTransform(cursorX, [0, 160], [-6, 6]);
+  const pupilRotationY = useTransform(cursorY, [-50, 200], [-6, 6]);
+
+  const mouseMoveHandler = useCallback(
+    (event: MouseEvent) => {
+      const rect = eyeRef.current?.getBoundingClientRect();
+
+      cursorX.set(event.clientX - (rect?.left ?? 0));
+      cursorY.set(event.clientY - (rect?.top ?? 0));
+    },
+    [cursorX, cursorY]
+  );
+
+  useEffect(() => {
+    window.addEventListener("mousemove", mouseMoveHandler);
+
+    return () => window.removeEventListener("mousemove", mouseMoveHandler);
+  }, [mouseMoveHandler]);
 
   return (
     <Wrapper
@@ -39,7 +65,12 @@ const Spinner: FC = () => {
             originY: "center"
           }}
         />
-        <g>
+        <motion.g
+          style={{
+            translateX: irisRotationX,
+            translateY: irisRotationY
+          }}
+        >
           <path
             d="M155.166 181.02c13.919 0 25.202-11.283 25.202-25.202 0-13.919-11.283-25.203-25.202-25.203-13.919 0-25.202 11.284-25.202 25.203 0 13.919 11.283 25.202 25.202 25.202Z"
             stroke="#fff"
@@ -49,12 +80,17 @@ const Spinner: FC = () => {
             d="M155.674 162.992a6.917 6.917 0 1 0 0-13.834 6.917 6.917 0 0 0 0 13.834Z"
             stroke="#fff"
             strokeWidth="3"
+            style={{
+              translateX: pupilRotationX,
+              translateY: pupilRotationY
+            }}
           />
-        </g>
+        </motion.g>
         <path
           d="M157.24 209.3c-33.126 1.022-66.996-15.373-88.654-52.322 18.162-30.428 48.555-50.806 80.751-53.502 32.171-2.694 66.513 12.239 92.601 53.247-19.027 33.113-51.571 51.555-84.698 52.577Z"
           stroke="#fff"
           strokeWidth="4"
+          ref={eyeRef}
         />
         <mask
           id="b"
@@ -75,6 +111,15 @@ const Spinner: FC = () => {
             d="M66 156.797c36.745-62.933 124.992-84.926 178-.301-38.552 68.72-134.027 76.855-178 .301Z"
             fill="#fff"
             style={{ originX: "top", scaleY: 0 }}
+            animate={{ scaleY: [0, 1, 0] }}
+            transition={{
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "easeOut",
+              duration: 0.8,
+              delay: 5,
+              repeatDelay: 17
+            }}
           />
         </g>
       </g>
