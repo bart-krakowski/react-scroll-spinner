@@ -20,7 +20,7 @@ const Wrapper = styled.svg`
 
 const Spinner: FC = () => {
   const { scrollYProgress } = useViewportScroll();
-  const eyeRef = useRef<SVGSVGElement>(null);
+  const eyeRef = useRef<SVGPathElement>(null);
 
   const rotation = useTransform(scrollYProgress, (val) => val * 360);
   const smoothRoation = useSpring(rotation, { stiffness: 400, damping: 90 });
