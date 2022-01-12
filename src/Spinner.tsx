@@ -9,18 +9,17 @@ import {
   useMotionValue
 } from "framer-motion";
 
-const Wrapper = styled.svg`
+const Wrapper = styled(motion.svg)`
   position: fixed;
   bottom: 15px;
   left: 15px;
   width: 250px;
   transform-origin: center;
-  transform: rotate(-20deg);
 `;
 
 const Spinner: FC = () => {
   const { scrollYProgress } = useViewportScroll();
-  const eyeRef = useRef<SVGSVGElement>(null);
+  const eyeRef = useRef<SVGPathElement>(null);
 
   const rotation = useTransform(scrollYProgress, (val) => val * 360);
   const smoothRoation = useSpring(rotation, { stiffness: 400, damping: 90 });
@@ -53,6 +52,9 @@ const Spinner: FC = () => {
       viewBox="0 0 312 312"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      style={{
+        rotate: -20
+      }}
     >
       <g clipPath="url(#a)">
         <motion.path
